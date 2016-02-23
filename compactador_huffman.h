@@ -7,9 +7,8 @@
  Description : Header do Compactador Huffman em C, Ansi-style.
  ============================================================================
  */
-
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef COMPACTADOR_HUFFMAN_H_
+#define COMPACTADOR_HUFFMAN_H_
 
 struct _lista {
 	void* adress_type;
@@ -69,6 +68,7 @@ int output_listTofileEncoder(arvoreHead *arvHead);
 void* input(void);
 void imprime(arvore* noh);
 void imprime_adress(arvore* noh);
+void mostrar_lista(lista *lst);
 
 
 //protótipos de operação com lista
@@ -78,6 +78,6 @@ int addLastList(listHead *lstHead, char chr);
 int finalizaLista(listHead *lstHead);//para dados tipo int
 int insertionS_lista(listHead *lstHead);
 int buscaBin_lista(listHead *lstHead, int x);
-int buscaLinear_lista(listHead *lstHead, char chr);
+int buscaLinear_lista(listHead *lstHead, char chr, lista **noh);
 
-//
+#endif /* COMPACTADOR_HUFFMAN_H_ */
