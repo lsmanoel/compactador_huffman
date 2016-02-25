@@ -40,6 +40,7 @@ typedef struct _arvore arvore;
 struct _arvoreHead {
 	int size;
 	int altura;
+	int largura;
 	arvore *root;
 };
 typedef struct _arvoreHead arvoreHead;
@@ -51,6 +52,14 @@ struct _nohChar
 };
 typedef struct _nohChar nohChar;
 
+struct _tabCode
+{
+	char caracter;
+	int code[8];
+	int code_size;
+};
+typedef struct _tabCode tabCode;
+
 //funções proprietárias do compactador
 int gerarLista_deNoh_ASCII(listHead *lstHead);
 int reordenadorLista_deNoh_ASCII(listHead *lstHead, arvoreHead* arvHead);
@@ -59,6 +68,8 @@ int reordenadorLista_deNoh_ASCII(listHead *lstHead, arvoreHead* arvHead);
 int inicializaARV(arvoreHead **avrHead);
 int main_altura_ARV(arvoreHead* arvHead);
 void aux1_altura_ARV(arvoreHead* arvHead, arvore* noh, int* altura);
+int main_largura_ARV(arvoreHead* arvHead);
+void aux1_largura_ARV(arvore* noh, int* n_folhas);
 int criarNohARV(void *elemento, int l_or_r, arvoreHead *head_temp);
 arvore* removeSubARV(arvore *noh, arvoreHead *arvHead);
 arvore* criarRamoARV(int* v, int *status, arvoreHead *avrHead);

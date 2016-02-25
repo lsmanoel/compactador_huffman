@@ -21,12 +21,33 @@ int main(void) {
 
 	status=reordenadorLista_deNoh_ASCII(lstHead, arvHead);
 	status=main_altura_ARV(arvHead);
+	status=main_largura_ARV(arvHead);
 
 	imprime(arvHead->root);
 	//status=output_listTofileEncoder(arvHead);
 	printf("status: %d\n", status);
 	puts("FIM DO PROGRAMA!"); /* prints ... */
 	return EXIT_SUCCESS;
+}
+
+int main_largura_ARV(arvoreHead* arvHead){
+	puts("main_largura_ARV()...");
+	int status=0, *n_folhas=(int*)malloc(sizeof(int));
+	*n_folhas=0;
+	aux1_largura_ARV(arvHead->root, n_folhas);
+	arvHead->largura=*n_folhas;
+	free(n_folhas);
+	printf("largura: %d\n", arvHead->largura);
+	return status;
+}
+
+void aux1_largura_ARV(arvore* noh, int* n_folhas){
+	if(!ehvazia(noh)){
+		if(noh->l==NULL && noh->r==NULL)
+			*n_folhas=1+*n_folhas;
+		aux1_largura_ARV(noh->l, n_folhas);
+		aux1_largura_ARV(noh->r, n_folhas);
+	}
 }
 
 int main_altura_ARV(arvoreHead* arvHead){
@@ -59,12 +80,29 @@ void aux1_altura_ARV(arvoreHead* arvHead, arvore* noh, int* altura){
 int output_listTofileEncoder(arvoreHead *arvHead){
 	int status=0;
 	FILE* fp;
+	int* altura= (int*) malloc(sizeof(int));
+	int* way=(int*)malloc(arvHead->altura*sizeof(int));
 	fp=fopen("arquivo_codificado.txt", "w");
 	status=writer__listTofileEncoder(fp, arvHead->root);
-	fclose(fp)
+	free(way);
+	fclose(fp);
+	free(altura);
 	return status;
 }
 
+int tabMaker_listTofileEncoder(arvoreHead* arvHead, arvore* noh, int* altura, int* way){
+	if(!ehvazia(noh)){
+		*altura=1+*altura;
+		//printf("altura: %d\n", *altura);
+		aux1_altura_ARV(arvHead, noh->l, altura);
+		if(arvHead->altura < *altura)
+			arvHead->altura=*altura;
+		aux1_altura_ARV(arvHead, noh->r, altura);
+		if(arvHead->altura<*altura)
+			arvHead->altura=*altura;
+		*altura=*altura-1;
+	}
+}
 int writer__listTofileEncoder(FILE* fp, arvore *noh){
 	//fchar():
 	if(!ehvazia(noh)){
@@ -83,6 +121,7 @@ int inicializaARV(arvoreHead **arvHead){
     	return 1;
     }
     novo_head->altura=0;
+    novo_head->largura=0;
 	novo_head->size=0;
 	novo_head->root=NULL;
 	*arvHead=novo_head;
@@ -243,11 +282,12 @@ int gerarLista_deNoh_ASCII(listHead *lstHead){
 
 int input_fileTolist(listHead *lstHead){
 	int status=0;
-	char temp_string[31]/*="testefile.txt"*/, chr;
+	char chr;
+	char temp_string[31]="testefile.txt";
 	lista* noh;
 	printf("Digite o nome do arquivo para compactacao: ");
-	__fpurge(stdin);
-	scanf("%s", temp_string);
+	//__fpurge(stdin);
+	//scanf("%s", temp_string);
 	FILE* fp;
 	puts("...");
 	fp = fopen(temp_string, "r");
