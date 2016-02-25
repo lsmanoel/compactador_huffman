@@ -30,89 +30,43 @@ int main(void) {
 	return EXIT_SUCCESS;
 }
 
-int main_largura_ARV(arvoreHead* arvHead){
-	puts("main_largura_ARV()...");
-	int status=0, *n_folhas=(int*)malloc(sizeof(int));
-	*n_folhas=0;
-	aux1_largura_ARV(arvHead->root, n_folhas);
-	arvHead->largura=*n_folhas;
-	free(n_folhas);
-	printf("largura: %d\n", arvHead->largura);
-	return status;
-}
 
-void aux1_largura_ARV(arvore* noh, int* n_folhas){
-	if(!ehvazia(noh)){
-		if(noh->l==NULL && noh->r==NULL)
-			*n_folhas=1+*n_folhas;
-		aux1_largura_ARV(noh->l, n_folhas);
-		aux1_largura_ARV(noh->r, n_folhas);
-	}
-}
-
-int main_altura_ARV(arvoreHead* arvHead){
-	puts("main_altura_ARV()...");
-	int status=0;
-	int* altura= (int*) malloc(sizeof(int));
-	*altura=0;
-	aux1_altura_ARV(arvHead, arvHead->root, altura);
-	printf("altura: %d\n", arvHead->altura);
-	free(altura);
-	return status;
-}
-
-void aux1_altura_ARV(arvoreHead* arvHead, arvore* noh, int* altura){
-	if(!ehvazia(noh)){
-		*altura=1+*altura;
-		//printf("altura: %d\n", *altura);
-		aux1_altura_ARV(arvHead, noh->l, altura);
-		if(arvHead->altura < *altura)
-			arvHead->altura=*altura;
-		aux1_altura_ARV(arvHead, noh->r, altura);
-		if(arvHead->altura<*altura)
-			arvHead->altura=*altura;
-		*altura=*altura-1;
-	}
-}
-
-
-/*
 int output_listTofileEncoder(arvoreHead *arvHead){
 	int status=0;
+	int* code=(int*)malloc(arvHead->altura*sizeof(int));
+	int* altura=(int*)malloc(sizeof(int));
+	listHead* temp_lstHead=(listHead*)malloc(sizeof(listHead));
+	*altura=0;
 	FILE* fp;
-	int* altura= (int*) malloc(sizeof(int));
-	int* way=(int*)malloc(arvHead->altura*sizeof(int));
+	tabCode* tab=(tabCode*)malloc(arvHead->largura*sizeof(tabCode));
 	fp=fopen("arquivo_codificado.txt", "w");
-	status=writer__listTofileEncoder(fp, arvHead->root);
-	free(way);
+
+	free(tab);
 	fclose(fp);
+	free(code);
 	free(altura);
 	return status;
 }
 
-int tabMaker_listTofileEncoder(arvoreHead* arvHead, arvore* noh, int* altura, int* way){
+void tabMaker_listTofileEncoder(arvoreHead* arvHead, arvore* noh, listHead* temp_lstHead, tabCode* tab){
 	if(!ehvazia(noh)){
-		*altura=1+*altura;
-		//printf("altura: %d\n", *altura);
-		aux1_altura_ARV(arvHead, noh->l, altura);
-		if(arvHead->altura < *altura)
-			arvHead->altura=*altura;
-		aux1_altura_ARV(arvHead, noh->r, altura);
-		if(arvHead->altura<*altura)
-			arvHead->altura=*altura;
-		*altura=*altura-1;
+		if(noh->l==NULL && noh->r==NULL){
+			//tabMaker_Salvar();
+		}
+		else{
+			//tabMaker_addList(0);
+		}
+		tabMaker_listTofileEncoder(arvHead, noh->l, temp_lstHead, tab);
+		if(noh->l || noh->r){
+			//tabMaker_rmList();
+			//tabMaker_addList(1);
+		}
+		tabMaker_listTofileEncoder(arvHead, noh->r, temp_lstHead, tab);
+		if(noh->l || noh->r){
+			//tabMaker_rmList();
+		}		
 	}
 }
-int writer__listTofileEncoder(FILE* fp, arvore *noh){
-	//fchar():
-	if(!ehvazia(noh)){
-		printf("imprime_adress(); noh adress: %p\n", noh);
-		status=writer__listTofileEncoder(fp, noh->l);
-		status=writer__listTofileEncoder(fp, noh->r);
-	}
-	return 0;
-}
-*/
 
 int inicializaARV(arvoreHead **arvHead){
 	arvoreHead* novo_head = (arvoreHead*) malloc(sizeof(arvoreHead));
@@ -410,6 +364,51 @@ void mostrar_lista(lista* lst){
 	//printf("%p\n", lst->next);
 	if(lst->next!=NULL)
 		mostrar_lista(lst->next);
+}
+
+int main_largura_ARV(arvoreHead* arvHead){
+	puts("main_largura_ARV()...");
+	int status=0, *n_folhas=(int*)malloc(sizeof(int));
+	*n_folhas=0;
+	aux1_largura_ARV(arvHead->root, n_folhas);
+	arvHead->largura=*n_folhas;
+	free(n_folhas);
+	printf("largura: %d\n", arvHead->largura);
+	return status;
+}
+
+void aux1_largura_ARV(arvore* noh, int* n_folhas){
+	if(!ehvazia(noh)){
+		if(noh->l==NULL && noh->r==NULL)
+			*n_folhas=1+*n_folhas;
+		aux1_largura_ARV(noh->l, n_folhas);
+		aux1_largura_ARV(noh->r, n_folhas);
+	}
+}
+
+int main_altura_ARV(arvoreHead* arvHead){
+	puts("main_altura_ARV()...");
+	int status=0;
+	int* altura= (int*) malloc(sizeof(int));
+	*altura=0;
+	aux1_altura_ARV(arvHead, arvHead->root, altura);
+	printf("altura: %d\n", arvHead->altura);
+	free(altura);
+	return status;
+}
+
+void aux1_altura_ARV(arvoreHead* arvHead, arvore* noh, int* altura){
+	if(!ehvazia(noh)){
+		*altura=1+*altura;
+		//printf("altura: %d\n", *altura);
+		aux1_altura_ARV(arvHead, noh->l, altura);
+		if(arvHead->altura < *altura)
+			arvHead->altura=*altura;
+		aux1_altura_ARV(arvHead, noh->r, altura);
+		if(arvHead->altura<*altura)
+			arvHead->altura=*altura;
+		*altura=*altura-1;
+	}
 }
 
 /*ehvazia(); retorna 1 se a sub árvore for vazia.
