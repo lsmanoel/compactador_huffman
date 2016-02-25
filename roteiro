@@ -1,2 +1,7 @@
+
 *Leitura de caracter em arquivo.
 *
+
+24/02 - 11:56 
+*Checar função de ordenação: 
+	checar atualização do ponteiro lstHead->first;

@@ -39,6 +39,7 @@ typedef struct _arvore arvore;
 
 struct _arvoreHead {
 	int size;
+	int altura;
 	arvore *root;
 };
 typedef struct _arvoreHead arvoreHead;
@@ -56,6 +57,8 @@ int reordenadorLista_deNoh_ASCII(listHead *lstHead, arvoreHead* arvHead);
 
 //protótipos de operação com árvore
 int inicializaARV(arvoreHead **avrHead);
+int main_altura_ARV(arvoreHead* arvHead);
+void aux1_altura_ARV(arvoreHead* arvHead, arvore* noh, int* altura);
 int criarNohARV(void *elemento, int l_or_r, arvoreHead *head_temp);
 arvore* removeSubARV(arvore *noh, arvoreHead *arvHead);
 arvore* criarRamoARV(int* v, int *status, arvoreHead *avrHead);
@@ -68,6 +71,7 @@ int output_listTofileEncoder(arvoreHead *arvHead);
 void* input(void);
 void imprime(arvore* noh);
 void imprime_adress(arvore* noh);
+void imprime_dado(arvore* noh);
 void mostrar_lista(lista *lst);
 
 
