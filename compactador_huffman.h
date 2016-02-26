@@ -55,8 +55,9 @@ typedef struct _nohChar nohChar;
 struct _tabCode
 {
 	char caracter;
-	int code[8];
+	lista *code;
 	int code_size;
+	int *i;
 };
 typedef struct _tabCode tabCode;
 
@@ -79,6 +80,12 @@ int ehvazia(arvore* noh);
 //protótipos I/O;
 int input_fileTolist(listHead *lstHead);
 int output_listTofileEncoder(arvoreHead *arvHead);
+void tabMaker_listTofileEncoder(arvoreHead* arvHead, arvore* noh, tabCode* tab);
+lista* tabMaker_Salvar(tabCode* tab, arvore* noh);
+lista* tabMaker_addList(int bit, lista* lst_bit);
+lista* tabMaker_rmList(lista* lst_bit);
+void tabMaker_imprime(tabCode* tab, arvoreHead* arvHead);
+
 void* input(void);
 void imprime(arvore* noh);
 void imprime_adress(arvore* noh);

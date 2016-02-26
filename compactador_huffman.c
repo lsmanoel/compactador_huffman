@@ -24,7 +24,7 @@ int main(void) {
 	status=main_largura_ARV(arvHead);
 
 	imprime(arvHead->root);
-	//status=output_listTofileEncoder(arvHead);
+	status=output_listTofileEncoder(arvHead);
 	printf("status: %d\n", status);
 	puts("FIM DO PROGRAMA!"); /* prints ... */
 	return EXIT_SUCCESS;
@@ -32,41 +32,118 @@ int main(void) {
 
 
 int output_listTofileEncoder(arvoreHead *arvHead){
-	int status=0;
+	puts("-------------------------------------------------------");
+	puts("output_listTofileEncoder()...");
+	int i, status=0;
 	int* code=(int*)malloc(arvHead->altura*sizeof(int));
-	int* altura=(int*)malloc(sizeof(int));
-	listHead* temp_lstHead=(listHead*)malloc(sizeof(listHead));
-	*altura=0;
-	FILE* fp;
+	int* deslocamento_i=(int*)malloc(sizeof(int));
+	*deslocamento_i=0;
+	//FILE* fp;
 	tabCode* tab=(tabCode*)malloc(arvHead->largura*sizeof(tabCode));
-	fp=fopen("arquivo_codificado.txt", "w");
-
+	if (tab)
+		puts("tabCode alocado em memoria!");
+	else{
+		puts("erro na alocação do tabCode...");
+		return 1;
+	}
+	puts("Preenchimento do tabCode...");
+	for(i=0; i<arvHead->largura; i++){
+		(tab+i)->code=NULL;
+		(tab+i)->code_size=0;
+		(tab+i)->caracter='*';
+		(tab+i)->i=deslocamento_i;
+	}
+	puts("tabCode preenchido tabCode!");
+	//tabMaker_listTofileEncoder(arvHead, arvHead->root, tab);
+	tabMaker_imprime(tab, arvHead);
+	//fp=fopen("arquivo_codificado.txt", "w");
+	//fclose(fp);
 	free(tab);
-	fclose(fp);
 	free(code);
-	free(altura);
 	return status;
 }
 
-void tabMaker_listTofileEncoder(arvoreHead* arvHead, arvore* noh, listHead* temp_lstHead, tabCode* tab){
+void tabMaker_listTofileEncoder(arvoreHead* arvHead, arvore* noh, tabCode* tab){
 	if(!ehvazia(noh)){
 		if(noh->l==NULL && noh->r==NULL){
-			//tabMaker_Salvar();
+			(tab+*(tab->i)-1)->code=tabMaker_Salvar(tab, noh);
 		}
 		else{
-			//tabMaker_addList(0);
+			(tab+*(tab->i))->code=tabMaker_addList(0, tab->code);
 		}
-		tabMaker_listTofileEncoder(arvHead, noh->l, temp_lstHead, tab);
+		tabMaker_listTofileEncoder(arvHead, noh->l, tab);
 		if(noh->l || noh->r){
-			//tabMaker_rmList();
-			//tabMaker_addList(1);
+			(tab+*(tab->i))->code=tabMaker_rmList(tab->code);//tabMaker_rmList();
+			(tab+*(tab->i))->code=tabMaker_addList(1, tab->code);
 		}
-		tabMaker_listTofileEncoder(arvHead, noh->r, temp_lstHead, tab);
+		tabMaker_listTofileEncoder(arvHead, noh->r, tab);
 		if(noh->l || noh->r){
-			//tabMaker_rmList();
+			(tab+*(tab->i))->code=tabMaker_rmList(tab->code);
 		}		
 	}
 }
+
+lista* tabMaker_Salvar(tabCode* tab, arvore* noh){
+	int n=0;
+	if(tab->code){
+		n++;
+		while(((lista*)tab->code)->first){
+			n++;
+			tab->code=((lista*)tab->code)->first;
+		}
+		tab->caracter=((nohChar*)noh->void_adress)->caracter;
+		tab->code_size=n;
+		*(tab->i)=1+*(tab->i);
+	}
+	return tab->code;
+}
+
+lista* tabMaker_addList(int bit, lista* lst_bit){
+	lista* novo_bit=(lista*)malloc(sizeof(lista));
+	if(bit)
+		novo_bit->adress_type=lst_bit;
+	else
+		novo_bit->adress_type=NULL;
+	novo_bit->next=NULL;
+	novo_bit->first=lst_bit;
+	return novo_bit;
+}
+
+lista* tabMaker_rmList(lista* lst_bit){
+	(lst_bit->first)->next=NULL;
+	lista* first=lst_bit->first;
+	free(lst_bit);
+	return first;
+}
+
+void tabMaker_imprime(tabCode* tab, arvoreHead* arvHead){
+	puts("-------------------------------------------------------");
+	puts("tabMaker_imprime()...");
+	int i;
+	lista* code;
+	for(i=0; i<arvHead->largura; i++){
+		printf("%c: ", (tab+i)->caracter);
+		code=(tab+i)->code;
+		if(code){
+			while(code){
+			if(code->adress_type==NULL)
+				printf("0");
+			else
+				printf("1");
+			code=code->next;
+			}
+		}
+		else
+			printf("%p", code);
+		printf("\n");
+	}
+}
+
+
+
+
+
+//#############################################################################
 
 int inicializaARV(arvoreHead **arvHead){
 	arvoreHead* novo_head = (arvoreHead*) malloc(sizeof(arvoreHead));
@@ -169,7 +246,7 @@ int insertionS_lista(listHead *lstHead){
 	clock_1=clock();
     lista *change, *lst_temp_i, *lst_temp_j;
 	int  i, j, *k;
-	puts("lista...");
+	puts("-------------------------------------------------------");
 	puts("insertionS_lista()...");
 	printf("lstHead->first: %p\n", lstHead->first);
 	printf("(lstHead->first)->next: %p\n", (lstHead->first)->next);
@@ -229,12 +306,16 @@ int insertionS_lista(listHead *lstHead){
 }
 
 int gerarLista_deNoh_ASCII(listHead *lstHead){
+	puts("-------------------------------------------------------");
+	puts("gerarLista_deNoh_ASCII()...");
 	int status=0;
 	status=input_fileTolist(lstHead);
 	return status;
 }
 
 int input_fileTolist(listHead *lstHead){
+	puts("-------------------------------------------------------");
+	puts("input_fileTolist()...");
 	int status=0;
 	char chr;
 	char temp_string[31]="testefile.txt";
@@ -274,6 +355,7 @@ int input_fileTolist(listHead *lstHead){
 }
 
 int addLastList(listHead *lstHead, char chr){
+	puts("-------------------------------------------------------");
 	puts("addLastList()...");
     lista* novo = (lista*) malloc(sizeof(lista));
     arvore* novo_arv = (arvore*) malloc(sizeof(arvore));
@@ -306,6 +388,7 @@ int addLastList(listHead *lstHead, char chr){
 }
 
 int buscaLinear_lista(listHead *lstHead, char chr, lista **noh){
+	puts("-------------------------------------------------------");
 	puts("buscaLinear_lista()...");
 	lista* temp;
 	temp=lstHead->first;
@@ -327,6 +410,7 @@ int buscaLinear_lista(listHead *lstHead, char chr, lista **noh){
 /*imprime(); checa se a sub árvore não é vazia para uma função de impressão.
 */
 void imprime(arvore* noh){
+	puts("-------------------------------------------------------");
 	puts("impressão...");
 	if(ehvazia(noh))
 		puts("Arvore vazia.");
@@ -367,6 +451,7 @@ void mostrar_lista(lista* lst){
 }
 
 int main_largura_ARV(arvoreHead* arvHead){
+	puts("-------------------------------------------------------");
 	puts("main_largura_ARV()...");
 	int status=0, *n_folhas=(int*)malloc(sizeof(int));
 	*n_folhas=0;
@@ -387,6 +472,7 @@ void aux1_largura_ARV(arvore* noh, int* n_folhas){
 }
 
 int main_altura_ARV(arvoreHead* arvHead){
+	puts("-------------------------------------------------------");
 	puts("main_altura_ARV()...");
 	int status=0;
 	int* altura= (int*) malloc(sizeof(int));
