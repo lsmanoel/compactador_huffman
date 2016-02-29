@@ -54,12 +54,36 @@ int tabMaker_inicializa(tabCode** tab, arvoreHead* arvHead){
 	return 0;
 }
 
+int tabMaker_finalizar(tabCode* tab){
+	puts("-------------------------------------------------------");
+	puts("tabMaker_imprime()...");
+	int i, status=0;
+	lista* code, morto;
+	for(i=0; i<arvHead->largura; i++){
+		printf("%c: ", (tab+i)->caracter);
+		code=(tab+i)->code;
+		if(code){
+			while(code){
+			free(code->adress_type);
+			morto=code;
+			code=code->first;
+			free(morto);
+			}
+		}
+		else
+			printf("%p", code);
+		printf("\n");
+	}
+	free(tab->i);
+	free(tab);
+	return status;
+}
+
 
 int output_listTofileEncoder(arvoreHead *arvHead){
 	puts("-------------------------------------------------------");
 	puts("output_listTofileEncoder()...");
 	int status=0;
-	int* code=(int*)malloc(arvHead->altura*sizeof(int));
 	//FILE* fp;
 	tabCode* tab;
 	tabMaker_inicializa(&tab, arvHead);
@@ -69,9 +93,6 @@ int output_listTofileEncoder(arvoreHead *arvHead){
 	tabMaker_imprime(tab, arvHead);
 	//fp=fopen("arquivo_codificado.txt", "w");
 	//fclose(fp);
-	free(tab->i);
-	free(tab);
-	free(code);
 	return status;
 }
 int tabMaker_ARVTolistEncoder(arvoreHead* arvHead, tabCode* tab){

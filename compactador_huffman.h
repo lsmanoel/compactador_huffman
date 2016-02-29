@@ -89,6 +89,7 @@ lista* tabMaker_addList(int bit, lista* lst_bit);
 lista* tabMaker_rmList(lista* lst_bit);
 int listTofileEncoder(tabCode* tab);
 void tabMaker_imprime(tabCode* tab, arvoreHead* arvHead);
+int tabMaker_finalizar(tabCode* tab);
 
 void* input(void);
 void imprime(arvore* noh);
