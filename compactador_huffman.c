@@ -30,18 +30,13 @@ int main(void) {
 	return EXIT_SUCCESS;
 }
 
-
-int output_listTofileEncoder(arvoreHead *arvHead){
+int tabMaker_inicializa(tabCode** tab, arvoreHead* arvHead){
 	puts("-------------------------------------------------------");
-	puts("output_listTofileEncoder()...");
-	int i, status=0;
-	int* code=(int*)malloc(arvHead->altura*sizeof(int));
-	int* deslocamento_i=(int*)malloc(sizeof(int));
-	*deslocamento_i=0;
-	//FILE* fp;
-	tabCode* tab=(tabCode*)malloc(arvHead->largura*sizeof(tabCode));
-	tab->i=(int*)malloc(sizeof(int));
-	if (tab)
+	puts("tabMaker_inicializa()...");
+	int i;
+	tabCode* novo_tab=(tabCode*)malloc(arvHead->largura*sizeof(tabCode));
+	novo_tab->i=(int*)malloc(sizeof(int));
+	if (novo_tab)
 		puts("tabCode alocado em memoria!");
 	else{
 		puts("erro na alocação do tabCode...");
@@ -49,17 +44,28 @@ int output_listTofileEncoder(arvoreHead *arvHead){
 	}
 	puts("Preenchimento do tabCode...");
 	for(i=0; i<arvHead->largura; i++){
-		(tab+i)->code=NULL;
-		(tab+i)->code_size=0;
-		(tab+i)->caracter='*';
-		(tab+i)->i=deslocamento_i;
+		(novo_tab+i)->code=NULL;
+		(novo_tab+i)->code_size=0;
+		(novo_tab+i)->caracter='*';
+		(novo_tab+i)->i=0;
 	}
 	puts("tabCode preenchido!");
-	tabMaker_imprime(tab, arvHead);
+	*tab=novo_tab;
+	return 0;
+}
+
+
+int output_listTofileEncoder(arvoreHead *arvHead){
 	puts("-------------------------------------------------------");
-	puts("tabMaker_listTofileEncoder()...");
-	lista *temp_code=NULL;
-	tabMaker_listTofileEncoder(arvHead, arvHead->root, tab, temp_code);
+	puts("output_listTofileEncoder()...");
+	int status=0;
+	int* code=(int*)malloc(arvHead->altura*sizeof(int));
+	//FILE* fp;
+	tabCode* tab;
+	tabMaker_inicializa(&tab, arvHead);
+	tabMaker_imprime(tab, arvHead);
+
+	tabMaker_ARVTolistEncoder(arvHead, tab);
 	tabMaker_imprime(tab, arvHead);
 	//fp=fopen("arquivo_codificado.txt", "w");
 	//fclose(fp);
@@ -68,8 +74,16 @@ int output_listTofileEncoder(arvoreHead *arvHead){
 	free(code);
 	return status;
 }
+int tabMaker_ARVTolistEncoder(arvoreHead* arvHead, tabCode* tab){
+	puts("-------------------------------------------------------");
+	puts("tabMaker_listTofileEncoder()...");
+	int status=0;
+	lista *temp_code=NULL;
+	tabMaker_ARVTolistEncoder_REC(arvHead, arvHead->root, tab, temp_code);
+	return status;
+}
 
-void tabMaker_listTofileEncoder(arvoreHead* arvHead, arvore* noh, tabCode* tab, lista* temp_code){
+void tabMaker_ARVTolistEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab, lista* temp_code){
 	puts("-------------------------------------------------------");
 	printf("  !ehvazia()... return %d\n", !ehvazia(noh));
 	if(!ehvazia(noh)){
@@ -81,16 +95,21 @@ void tabMaker_listTofileEncoder(arvoreHead* arvHead, arvore* noh, tabCode* tab, 
 		else{
 			temp_code=tabMaker_addList(0, temp_code);
 		}
-		tabMaker_listTofileEncoder(arvHead, noh->l, tab, temp_code);
+		tabMaker_ARVTolistEncoder_REC(arvHead, noh->l, tab, temp_code);
 		if(noh->l || noh->r){
 			temp_code=tabMaker_rmList(temp_code);
 			temp_code=tabMaker_addList(1, temp_code);
 		}
-		tabMaker_listTofileEncoder(arvHead, noh->r, tab, temp_code);
+		tabMaker_ARVTolistEncoder_REC(arvHead, noh->r, tab, temp_code);
 		if(noh->l || noh->r){
 			temp_code=tabMaker_rmList(temp_code);
 		}		
 	}
+}
+
+int listTofileEncoder(tabCode* tab){
+	int status=0;
+	return status;
 }
 
 lista* tabMaker_Salvar(tabCode* tab, lista* lst_code, arvore* noh){
