@@ -40,6 +40,7 @@ int output_listTofileEncoder(arvoreHead *arvHead){
 	*deslocamento_i=0;
 	//FILE* fp;
 	tabCode* tab=(tabCode*)malloc(arvHead->largura*sizeof(tabCode));
+	tab->i=(int*)malloc(sizeof(int));
 	if (tab)
 		puts("tabCode alocado em memoria!");
 	else{
@@ -53,66 +54,125 @@ int output_listTofileEncoder(arvoreHead *arvHead){
 		(tab+i)->caracter='*';
 		(tab+i)->i=deslocamento_i;
 	}
-	puts("tabCode preenchido tabCode!");
-	//tabMaker_listTofileEncoder(arvHead, arvHead->root, tab);
+	puts("tabCode preenchido!");
+	tabMaker_imprime(tab, arvHead);
+	puts("-------------------------------------------------------");
+	puts("tabMaker_listTofileEncoder()...");
+	lista *temp_code=NULL;
+	tabMaker_listTofileEncoder(arvHead, arvHead->root, tab, temp_code);
 	tabMaker_imprime(tab, arvHead);
 	//fp=fopen("arquivo_codificado.txt", "w");
 	//fclose(fp);
+	free(tab->i);
 	free(tab);
 	free(code);
 	return status;
 }
 
-void tabMaker_listTofileEncoder(arvoreHead* arvHead, arvore* noh, tabCode* tab){
+void tabMaker_listTofileEncoder(arvoreHead* arvHead, arvore* noh, tabCode* tab, lista* temp_code){
+	puts("-------------------------------------------------------");
+	printf("  !ehvazia()... return %d\n", !ehvazia(noh));
 	if(!ehvazia(noh)){
 		if(noh->l==NULL && noh->r==NULL){
-			(tab+*(tab->i)-1)->code=tabMaker_Salvar(tab, noh);
+			(tab+*(tab->i))->code=tabMaker_Salvar(tab+*(tab->i), temp_code, noh);
+			tabMaker_imprime(tab, arvHead);
+			printf("*(tab->i): %d\n", *(tab->i));
 		}
 		else{
-			(tab+*(tab->i))->code=tabMaker_addList(0, tab->code);
+			temp_code=tabMaker_addList(0, temp_code);
 		}
-		tabMaker_listTofileEncoder(arvHead, noh->l, tab);
+		tabMaker_listTofileEncoder(arvHead, noh->l, tab, temp_code);
+		puts("saida da recursividade 1");
 		if(noh->l || noh->r){
-			(tab+*(tab->i))->code=tabMaker_rmList(tab->code);//tabMaker_rmList();
-			(tab+*(tab->i))->code=tabMaker_addList(1, tab->code);
+			printf("%p\n", temp_code);
+			puts(". 1 >>>");
+			temp_code=tabMaker_rmList(temp_code);
+			puts(".. 1 >>>");
+			temp_code=tabMaker_addList(1, temp_code);
+			puts("... 1 >>>");
 		}
-		tabMaker_listTofileEncoder(arvHead, noh->r, tab);
+		tabMaker_listTofileEncoder(arvHead, noh->r, tab, temp_code);
+		puts("saida da recursividade 2");
 		if(noh->l || noh->r){
-			(tab+*(tab->i))->code=tabMaker_rmList(tab->code);
+			printf("%p\n", temp_code);
+			puts(". 2 >>>");
+			temp_code=tabMaker_rmList(temp_code);
+			puts(".. 2 >>>");
 		}		
 	}
 }
 
-lista* tabMaker_Salvar(tabCode* tab, arvore* noh){
+lista* tabMaker_Salvar(tabCode* tab, lista* lst_code, arvore* noh){
+	printf("	tabMaker_Salvar()... \n");
 	int n=0;
-	if(tab->code){
-		n++;
-		while(((lista*)tab->code)->first){
+	lista* code, *temp_count;
+	//lista* next_code = (tab+1)->code;
+	if(lst_code){
+		temp_count=lst_code;
+		while(temp_count){
 			n++;
-			tab->code=((lista*)tab->code)->first;
+			temp_count=temp_count->first;
 		}
+		puts("...");
+		temp_count=lst_code;
+		while(temp_count){
+			if(temp_count->adress_type==NULL){
+				printf("add 0 -->");
+				code=tabMaker_addList(0, code);
+			}
+			else{
+				printf("add 1 -->");
+				code=tabMaker_addList(1, code);
+			}
+			temp_count=temp_count->first;
+		}
+		printf("code: ");
+		temp_count=code;
+		while(temp_count){
+			if(temp_count->adress_type==NULL){
+				printf("0 ");
+			}
+			else{
+				printf("1 ");
+			}
+			temp_count=temp_count->first;
+		}
+		printf("\n");
 		tab->caracter=((nohChar*)noh->void_adress)->caracter;
 		tab->code_size=n;
+		printf("		tab->code_size= %d\n", tab->code_size);
 		*(tab->i)=1+*(tab->i);
 	}
-	return tab->code;
+	printf("	tab->code: %p Ok!\n", code);
+	return code;
 }
 
 lista* tabMaker_addList(int bit, lista* lst_bit){
+	printf("	tabMaker_addList...\n");
 	lista* novo_bit=(lista*)malloc(sizeof(lista));
 	if(bit)
-		novo_bit->adress_type=lst_bit;
+		novo_bit->adress_type=novo_bit;
 	else
 		novo_bit->adress_type=NULL;
 	novo_bit->next=NULL;
 	novo_bit->first=lst_bit;
+	if(lst_bit)
+		//lst_bit->next=novo_bit;
+	printf("\nnovo_bit: %p Ok!\n", novo_bit);
 	return novo_bit;
 }
 
 lista* tabMaker_rmList(lista* lst_bit){
-	(lst_bit->first)->next=NULL;
-	lista* first=lst_bit->first;
+	printf("	tabMaker_rmList... ");
+	lista* first;
+	if(lst_bit->first){
+		first=lst_bit->first;
+		first->next=NULL;
+	}
+	else
+		first=NULL;
 	free(lst_bit);
+	printf("Ok!\n");
 	return first;
 }
 
@@ -126,11 +186,13 @@ void tabMaker_imprime(tabCode* tab, arvoreHead* arvHead){
 		code=(tab+i)->code;
 		if(code){
 			while(code){
+			//printf("%p ", code);
+			//printf("next%p first%p: ", code->next, code->first);
 			if(code->adress_type==NULL)
 				printf("0");
 			else
 				printf("1");
-			code=code->next;
+			code=code->first;
 			}
 		}
 		else
@@ -411,7 +473,7 @@ int buscaLinear_lista(listHead *lstHead, char chr, lista **noh){
 */
 void imprime(arvore* noh){
 	puts("-------------------------------------------------------");
-	puts("impressão...");
+	puts("imprime()...");
 	if(ehvazia(noh))
 		puts("Arvore vazia.");
 	else{
@@ -423,7 +485,7 @@ void imprime(arvore* noh){
 /*imprime_adress(); imprime recursivamente os adress dos nós de uma sub árvore*/
 void imprime_adress(arvore* noh){
 	if(!ehvazia(noh)){
-		printf("imprime_adress(); noh adress: %p\n", noh);
+		printf("	imprime_adress(); noh adress: %p\n", noh);
 		imprime_adress(noh->l);
 		imprime_adress(noh->r);
 	}
@@ -431,7 +493,7 @@ void imprime_adress(arvore* noh){
 
 void imprime_dado(arvore* noh){
 	if(!ehvazia(noh)){
-		printf("imprime_dado(); peso: %d ... caracter: %c\n", ((nohChar*)noh->void_adress)->peso, ((nohChar*)noh->void_adress)->caracter);
+		printf("	imprime_dado(); peso: %d ... caracter: %c\n", ((nohChar*)noh->void_adress)->peso, ((nohChar*)noh->void_adress)->caracter);
 		if(noh->l)
 			puts("... ->l");
 		imprime_dado(noh->l);
