@@ -82,22 +82,13 @@ void tabMaker_listTofileEncoder(arvoreHead* arvHead, arvore* noh, tabCode* tab, 
 			temp_code=tabMaker_addList(0, temp_code);
 		}
 		tabMaker_listTofileEncoder(arvHead, noh->l, tab, temp_code);
-		puts("saida da recursividade 1");
 		if(noh->l || noh->r){
-			printf("%p\n", temp_code);
-			puts(". 1 >>>");
 			temp_code=tabMaker_rmList(temp_code);
-			puts(".. 1 >>>");
 			temp_code=tabMaker_addList(1, temp_code);
-			puts("... 1 >>>");
 		}
 		tabMaker_listTofileEncoder(arvHead, noh->r, tab, temp_code);
-		puts("saida da recursividade 2");
 		if(noh->l || noh->r){
-			printf("%p\n", temp_code);
-			puts(". 2 >>>");
 			temp_code=tabMaker_rmList(temp_code);
-			puts(".. 2 >>>");
 		}		
 	}
 }
@@ -505,8 +496,8 @@ void imprime_dado(arvore* noh){
 
 void mostrar_lista(lista* lst){
 	printf("%c ... peso: %d ... adress: %p\n", ((nohChar*)((arvore*)lst->adress_type)->void_adress)->caracter, 
-											   ((nohChar*)((arvore*)lst->adress_type)->void_adress)->peso),
-									           lst;
+											   ((nohChar*)((arvore*)lst->adress_type)->void_adress)->peso,
+									           lst);
 	//printf("%p\n", lst->next);
 	if(lst->next!=NULL)
 		mostrar_lista(lst->next);
