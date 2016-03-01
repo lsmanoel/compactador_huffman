@@ -35,8 +35,10 @@ int tabMaker_inicializa(tabCode** tab, arvoreHead* arvHead){
 	puts("tabMaker_inicializa()...");
 	int i;
 	tabCode* novo_tab=(tabCode*)malloc(arvHead->largura*sizeof(tabCode));
-	novo_tab->i=(int*)malloc(sizeof(int));
-	if (novo_tab)
+	int* novo_i=(int*)malloc(sizeof(int));
+	*novo_i=0;
+	printf("%p\n", novo_tab->i);
+	if (novo_tab && novo_i)
 		puts("tabCode alocado em memoria!");
 	else{
 		puts("erro na alocação do tabCode...");
@@ -47,24 +49,23 @@ int tabMaker_inicializa(tabCode** tab, arvoreHead* arvHead){
 		(novo_tab+i)->code=NULL;
 		(novo_tab+i)->code_size=0;
 		(novo_tab+i)->caracter='*';
-		(novo_tab+i)->i=0;
+		(novo_tab+i)->i=novo_i;
 	}
 	puts("tabCode preenchido!");
 	*tab=novo_tab;
+	printf("%c\n", (*tab)->caracter);
 	return 0;
 }
 
-int tabMaker_finalizar(tabCode* tab){
+int tabMaker_finalizar(tabCode* tab, arvoreHead* arvHead){
 	puts("-------------------------------------------------------");
-	puts("tabMaker_imprime()...");
+	puts("tabMaker_finalizar()...");
 	int i, status=0;
-	lista* code, morto;
+	lista* code, *morto;
 	for(i=0; i<arvHead->largura; i++){
-		printf("%c: ", (tab+i)->caracter);
 		code=(tab+i)->code;
 		if(code){
 			while(code){
-			free(code->adress_type);
 			morto=code;
 			code=code->first;
 			free(morto);
@@ -72,10 +73,10 @@ int tabMaker_finalizar(tabCode* tab){
 		}
 		else
 			printf("%p", code);
-		printf("\n");
 	}
 	free(tab->i);
 	free(tab);
+	puts("tab finalizada!");
 	return status;
 }
 
@@ -89,39 +90,45 @@ int output_listTofileEncoder(arvoreHead *arvHead){
 	tabMaker_inicializa(&tab, arvHead);
 	tabMaker_imprime(tab, arvHead);
 
-	tabMaker_ARVTolistEncoder(arvHead, tab);
+	tabMaker_ARVTotabEncoder(arvHead, tab);
 	tabMaker_imprime(tab, arvHead);
+	tabMaker_finalizar(tab, arvHead);
+	removeSubARV(arvHead->root, arvHead);
 	//fp=fopen("arquivo_codificado.txt", "w");
 	//fclose(fp);
 	return status;
 }
-int tabMaker_ARVTolistEncoder(arvoreHead* arvHead, tabCode* tab){
+int tabMaker_ARVTotabEncoder(arvoreHead* arvHead, tabCode* tab){
 	puts("-------------------------------------------------------");
 	puts("tabMaker_listTofileEncoder()...");
 	int status=0;
 	lista *temp_code=NULL;
-	tabMaker_ARVTolistEncoder_REC(arvHead, arvHead->root, tab, temp_code);
+	tabMaker_ARVTotabEncoder_REC(arvHead, arvHead->root, tab, temp_code);
 	return status;
 }
 
-void tabMaker_ARVTolistEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab, lista* temp_code){
+void tabMaker_ARVTotabEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab, lista* temp_code){
 	puts("-------------------------------------------------------");
 	printf("  !ehvazia()... return %d\n", !ehvazia(noh));
 	if(!ehvazia(noh)){
+		puts(">>>>");
 		if(noh->l==NULL && noh->r==NULL){
+			printf("%d\n", *(tab->i));
+			puts("a");
 			(tab+*(tab->i))->code=tabMaker_Salvar(tab+*(tab->i), temp_code, noh);
+			puts("b");
 			tabMaker_imprime(tab, arvHead);
 			printf("*(tab->i): %d\n", *(tab->i));
 		}
 		else{
 			temp_code=tabMaker_addList(0, temp_code);
 		}
-		tabMaker_ARVTolistEncoder_REC(arvHead, noh->l, tab, temp_code);
+		tabMaker_ARVTotabEncoder_REC(arvHead, noh->l, tab, temp_code);
 		if(noh->l || noh->r){
 			temp_code=tabMaker_rmList(temp_code);
 			temp_code=tabMaker_addList(1, temp_code);
 		}
-		tabMaker_ARVTolistEncoder_REC(arvHead, noh->r, tab, temp_code);
+		tabMaker_ARVTotabEncoder_REC(arvHead, noh->r, tab, temp_code);
 		if(noh->l || noh->r){
 			temp_code=tabMaker_rmList(temp_code);
 		}		
@@ -136,7 +143,7 @@ int listTofileEncoder(tabCode* tab){
 lista* tabMaker_Salvar(tabCode* tab, lista* lst_code, arvore* noh){
 	printf("	tabMaker_Salvar()... \n");
 	int n=0;
-	lista* code, *temp_count;
+	lista* code=NULL, *temp_count=NULL;
 	//lista* next_code = (tab+1)->code;
 	if(lst_code){
 		temp_count=lst_code;
@@ -168,11 +175,13 @@ lista* tabMaker_Salvar(tabCode* tab, lista* lst_code, arvore* noh){
 			}
 			temp_count=temp_count->first;
 		}
-		printf("\n");
+		printf("%p %c\n", &(tab->caracter), ((nohChar*)noh->void_adress)->caracter);
 		tab->caracter=((nohChar*)noh->void_adress)->caracter;
 		tab->code_size=n;
 		printf("		tab->code_size= %d\n", tab->code_size);
+		printf("%d\n", *(tab->i));
 		*(tab->i)=1+*(tab->i);
+		printf("%c\n", tab->caracter);
 	}
 	printf("	tab->code: %p Ok!\n", code);
 	return code;
@@ -253,6 +262,19 @@ int inicializaARV(arvoreHead **arvHead){
 	return 0;
 }
 
+arvore* removeSubARV(arvore *noh, arvoreHead *arvHead){
+	if(!ehvazia(noh)){
+		removeSubARV(noh->l, arvHead);
+		removeSubARV(noh->r, arvHead);
+		//printf("removeRamoARV(); noh adress: %p\n", noh);
+		arvHead->size--;
+		free(noh->void_adress);
+		free(noh);
+		//printf("removeRamoARV(); noh adress: %p\n", noh);
+	}
+	return NULL;
+}
+
 int inicializaLista(listHead **lstHead) {
     listHead *novo_head = (listHead*) malloc(sizeof (listHead));
     if (novo_head==NULL){
@@ -325,11 +347,11 @@ int reordenadorLista_deNoh_ASCII(listHead* lstHead, arvoreHead* arvHead){
 		printf("%p\n", lstHead->last);
 		lstHead->first=lstHead->last;
 		lstHead->last=NULL;
-		(lstHead->first)->first=NULL;
 		free(morto1);		
 		free(morto2);
 		printf("%p\n", lstHead->first);
 		mostrar_lista(lstHead->first);
+		free(lstHead->first);
 	}
 	return status;
 }

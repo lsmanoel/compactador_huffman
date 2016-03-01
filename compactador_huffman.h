@@ -82,14 +82,14 @@ int input_fileTolist(listHead *lstHead);
 int output_listTofileEncoder(arvoreHead *arvHead);
 
 int tabMaker_inicializa(tabCode** tab, arvoreHead *arvHead);
-int tabMaker_ARVTolistEncoder(arvoreHead* arvHead, tabCode* tab);
-void tabMaker_ARVTolistEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab, lista* temp_code);
+int tabMaker_ARVTotabEncoder(arvoreHead* arvHead, tabCode* tab);
+void tabMaker_ARVTotabEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab, lista* temp_code);
 lista* tabMaker_Salvar(tabCode* tab,lista* lst_code, arvore* noh);
 lista* tabMaker_addList(int bit, lista* lst_bit);
 lista* tabMaker_rmList(lista* lst_bit);
 int listTofileEncoder(tabCode* tab);
 void tabMaker_imprime(tabCode* tab, arvoreHead* arvHead);
-int tabMaker_finalizar(tabCode* tab);
+int tabMaker_finalizar(tabCode* tab, arvoreHead* arvHead);
 
 void* input(void);
 void imprime(arvore* noh);
