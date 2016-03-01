@@ -166,9 +166,11 @@ void tabMaker_tabTofileEncoder_TAB_REC(tabCode* tab, FILE* encodeFile, FILE* fil
 void tabMaker_tabTofileEncoder_ARV_REC(arvore* noh, FILE* fp){
 	printf("<");
 	fprintf(fp, "<");
-	if(!ehvazia(noh)){	
-		printf("%c", ((nohChar*)noh->void_adress)->caracter);
-		fprintf(fp, "%c",((nohChar*)noh->void_adress)->caracter);
+	if(!ehvazia(noh)){
+		if(noh->l==NULL && noh->r==NULL){
+			printf("%c", ((nohChar*)noh->void_adress)->caracter);
+			fprintf(fp, "%c",((nohChar*)noh->void_adress)->caracter);
+		}
 		tabMaker_tabTofileEncoder_ARV_REC(noh->l, fp);
 		tabMaker_tabTofileEncoder_ARV_REC(noh->r, fp);
 		printf(">");
@@ -179,8 +181,6 @@ void tabMaker_tabTofileEncoder_ARV_REC(arvore* noh, FILE* fp){
 		fprintf(fp, ">");
 	}
 }
-
-
 
 
 
