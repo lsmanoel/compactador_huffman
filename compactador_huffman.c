@@ -92,10 +92,11 @@ int output_listTofileEncoder(arvoreHead *arvHead){
 
 	tabMaker_ARVTotabEncoder(arvHead, tab);
 	tabMaker_imprime(tab, arvHead);
+
+	tabMaker_tabTofileEncoder(tab, arvHead);
+
 	tabMaker_finalizar(tab, arvHead);
 	removeSubARV(arvHead->root, arvHead);
-	//fp=fopen("arquivo_codificado.txt", "w");
-	//fclose(fp);
 	return status;
 }
 int tabMaker_ARVTotabEncoder(arvoreHead* arvHead, tabCode* tab){
@@ -135,7 +136,7 @@ void tabMaker_ARVTotabEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab
 	}
 }
 
-int listTofileEncoder(tabCode* tab){
+int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead){
 	int status=0;
 	return status;
 }
