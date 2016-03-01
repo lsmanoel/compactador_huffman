@@ -6,12 +6,13 @@
 int main(void) {
 	arvoreHead *arvHead;
 	listHead *lstHead;
+	char* string;
 
 	int status=10;
 	status=inicializaARV(&arvHead);
 	status=inicializaLista(&lstHead);
 
-	status=gerarLista_deNoh_ASCII(lstHead);
+	status=gerarLista_deNoh_ASCII(lstHead, &string);
 
 	mostrar_lista((lista*)lstHead->first);
 
@@ -24,7 +25,7 @@ int main(void) {
 	status=main_largura_ARV(arvHead);
 
 	imprime(arvHead->root);
-	status=output_listTofileEncoder(arvHead);
+	status=output_listTofileEncoder(arvHead, string);
 	printf("status: %d\n", status);
 	puts("FIM DO PROGRAMA!"); /* prints ... */
 	return EXIT_SUCCESS;
@@ -81,7 +82,7 @@ int tabMaker_finalizar(tabCode* tab, arvoreHead* arvHead){
 }
 
 
-int output_listTofileEncoder(arvoreHead *arvHead){
+int output_listTofileEncoder(arvoreHead *arvHead, char* string){
 	puts("-------------------------------------------------------");
 	puts("output_listTofileEncoder()...");
 	int status=0;
@@ -93,15 +94,15 @@ int output_listTofileEncoder(arvoreHead *arvHead){
 	tabMaker_ARVTotabEncoder(arvHead, tab);
 	tabMaker_imprime(tab, arvHead);
 
-	tabMaker_tabTofileEncoder(tab, arvHead);
-
+	tabMaker_tabTofileEncoder(tab, arvHead, string);
+	
 	tabMaker_finalizar(tab, arvHead);
 	removeSubARV(arvHead->root, arvHead);
 	return status;
 }
 int tabMaker_ARVTotabEncoder(arvoreHead* arvHead, tabCode* tab){
 	puts("-------------------------------------------------------");
-	puts("tabMaker_listTofileEncoder()...");
+	puts("tabMaker_ARVTotabEncoder()...");
 	int status=0;
 	lista *temp_code=NULL;
 	tabMaker_ARVTotabEncoder_REC(arvHead, arvHead->root, tab, temp_code);
@@ -136,10 +137,52 @@ void tabMaker_ARVTotabEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab
 	}
 }
 
-int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead){
+int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead, char *string){
+	puts("-------------------------------------------------------");
+	puts("tabMaker_tabTofileEncoder...");
+	FILE* encodeFile, *file;
+	encodeFile = fopen("arquivo_codificado.txt", "w");
+	if(encodeFile==NULL)
+		puts("erro ao abrir arquivo_codificado.txt");
+	else
+		puts("arquivo_codificado.txt Aberto!");
+	file = fopen(string, "r");
+	if (file==NULL)
+		printf("erro ao abrie %s\n", string);
+	else
+		printf("%s Aberto!\n", string);
+	tabMaker_tabTofileEncoder_ARV_REC(arvHead->root, encodeFile);
+	printf("\n");
+	tabMaker_tabTofileEncoder_TAB_REC(tab, encodeFile, file);
 	int status=0;
+	fclose(encodeFile);
 	return status;
 }
+
+void tabMaker_tabTofileEncoder_TAB_REC(tabCode* tab, FILE* encodeFile, FILE* file){
+
+}
+
+void tabMaker_tabTofileEncoder_ARV_REC(arvore* noh, FILE* fp){
+	printf("<");
+	fprintf(fp, "<");
+	if(!ehvazia(noh)){	
+		printf("%c", ((nohChar*)noh->void_adress)->caracter);
+		fprintf(fp, "%c",((nohChar*)noh->void_adress)->caracter);
+		tabMaker_tabTofileEncoder_ARV_REC(noh->l, fp);
+		tabMaker_tabTofileEncoder_ARV_REC(noh->r, fp);
+		printf(">");
+		fprintf(fp, ">");
+	}
+	else{
+		printf(">");
+		fprintf(fp, ">");
+	}
+}
+
+
+
+
 
 lista* tabMaker_Salvar(tabCode* tab, lista* lst_code, arvore* noh){
 	printf("	tabMaker_Salvar()... \n");
@@ -421,15 +464,15 @@ int insertionS_lista(listHead *lstHead){
 	return 0;
 }
 
-int gerarLista_deNoh_ASCII(listHead *lstHead){
+int gerarLista_deNoh_ASCII(listHead *lstHead, char** string){
 	puts("-------------------------------------------------------");
 	puts("gerarLista_deNoh_ASCII()...");
 	int status=0;
-	status=input_fileTolist(lstHead);
+	status=input_fileTolist(lstHead, string);
 	return status;
 }
 
-int input_fileTolist(listHead *lstHead){
+int input_fileTolist(listHead *lstHead, char** string){
 	puts("-------------------------------------------------------");
 	puts("input_fileTolist()...");
 	int status=0;
@@ -439,9 +482,10 @@ int input_fileTolist(listHead *lstHead){
 	printf("Digite o nome do arquivo para compactacao: ");
 	//__fpurge(stdin);
 	//scanf("%s", temp_string);
+	*string=temp_string;
 	FILE* fp;
 	puts("...");
-	fp = fopen(temp_string, "r");
+	fp = fopen(*string, "r");
 	puts("...");
 	if (fp==NULL) {
 		printf("Erro ao abrir o arquivo!\n");

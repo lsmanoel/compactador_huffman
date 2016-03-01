@@ -62,7 +62,7 @@ struct _tabCode
 typedef struct _tabCode tabCode;
 
 //funções proprietárias do compactador
-int gerarLista_deNoh_ASCII(listHead *lstHead);
+int gerarLista_deNoh_ASCII(listHead *lstHead, char** string);
 int reordenadorLista_deNoh_ASCII(listHead *lstHead, arvoreHead* arvHead);
 
 //protótipos de operação com árvore
@@ -78,8 +78,8 @@ arvore* criarNohRecursivo(void *elemento, arvore* l, arvore* r, arvoreHead *arvH
 int ehvazia(arvore* noh);
 
 //protótipos I/O;
-int input_fileTolist(listHead *lstHead);
-int output_listTofileEncoder(arvoreHead *arvHead);
+int input_fileTolist(listHead *lstHead, char** string);
+int output_listTofileEncoder(arvoreHead *arvHead, char* string);
 
 int tabMaker_inicializa(tabCode** tab, arvoreHead *arvHead);
 int tabMaker_ARVTotabEncoder(arvoreHead* arvHead, tabCode* tab);
@@ -87,7 +87,9 @@ void tabMaker_ARVTotabEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab
 lista* tabMaker_Salvar(tabCode* tab,lista* lst_code, arvore* noh);
 lista* tabMaker_addList(int bit, lista* lst_bit);
 lista* tabMaker_rmList(lista* lst_bit);
-int listTofileEncoder(tabCode* tab);
+int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead, char* string);
+void tabMaker_tabTofileEncoder_ARV_REC(arvore* noh, FILE* fp);
+void tabMaker_tabTofileEncoder_TAB_REC(tabCode* tab, FILE* encodeFile, FILE* file);
 void tabMaker_imprime(tabCode* tab, arvoreHead* arvHead);
 int tabMaker_finalizar(tabCode* tab, arvoreHead* arvHead);
 
