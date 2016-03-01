@@ -140,9 +140,11 @@ void tabMaker_ARVTotabEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab
 int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead, char *string){
 	puts("-------------------------------------------------------");
 	puts("tabMaker_tabTofileEncoder...");
-	FILE* encodeFile, *file;
-	encodeFile = fopen("arquivo_codificado.txt", "w");
-	if(encodeFile==NULL)
+	int status=0;
+	FILE* /*encodeFile_txt,*/ encodeFile_dat, *file;
+	//encodeFile_txt = fopen("arquivo_codificado.txt", "w");
+	encodeFile_dat = fopen("arquivo_codificado.dat", "w");
+	if(encodeFile_dat==NULL)
 		puts("erro ao abrir arquivo_codificado.txt");
 	else
 		puts("arquivo_codificado.txt Aberto!");
@@ -151,19 +153,20 @@ int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead, char *string){
 		printf("erro ao abrie %s\n", string);
 	else
 		printf("%s Aberto!\n", string);
-	tabMaker_tabTofileEncoder_ARV_REC(arvHead->root, encodeFile);
+	tabMaker_tabTofileEncoder_ARV_REC_DAT(arvHead->root, encodeFile_dat);
 	printf("\n");
-	tabMaker_tabTofileEncoder_TAB_REC(tab, encodeFile, file);
-	int status=0;
-	fclose(encodeFile);
+	tabMaker_tabTofileEncoder_TAB_REC_DAT(tab, encodeFile_dat, file);
+
+	fclose(encodeFile_dat);
+	//fclose(encodeFile_txt);
 	return status;
 }
 
-void tabMaker_tabTofileEncoder_TAB_REC(tabCode* tab, FILE* encodeFile, FILE* file){
+void tabMaker_tabTofileEncoder_TAB_REC_DAT(tabCode* tab, FILE* encodeFile, FILE* file){
 
 }
 
-void tabMaker_tabTofileEncoder_ARV_REC(arvore* noh, FILE* fp){
+void tabMaker_tabTofileEncoder_ARV_REC_TXT(arvore* noh, FILE* fp){
 	printf("<");
 	fprintf(fp, "<");
 	if(!ehvazia(noh)){
@@ -171,8 +174,8 @@ void tabMaker_tabTofileEncoder_ARV_REC(arvore* noh, FILE* fp){
 			printf("%c", ((nohChar*)noh->void_adress)->caracter);
 			fprintf(fp, "%c",((nohChar*)noh->void_adress)->caracter);
 		}
-		tabMaker_tabTofileEncoder_ARV_REC(noh->l, fp);
-		tabMaker_tabTofileEncoder_ARV_REC(noh->r, fp);
+		tabMaker_tabTofileEncoder_ARV_REC_TXT(noh->l, fp);
+		tabMaker_tabTofileEncoder_ARV_REC_TXT(noh->r, fp);
 		printf(">");
 		fprintf(fp, ">");
 	}
@@ -182,7 +185,13 @@ void tabMaker_tabTofileEncoder_ARV_REC(arvore* noh, FILE* fp){
 	}
 }
 
-
+void tabMaker_tabTofileEncoder_ARV_REC_DAT(arvore* noh, FILE* fp){
+	if(!ehvazia(noh)){
+		fwrite(noh, sizeof(arvore), 1, fp);
+		tabMaker_tabTofileEncoder_ARV_REC_DAT(noh->l, fp);
+		tabMaker_tabTofileEncoder_ARV_REC_DAT(noh->r, fp);
+	}
+}
 
 lista* tabMaker_Salvar(tabCode* tab, lista* lst_code, arvore* noh){
 	printf("	tabMaker_Salvar()... \n");

@@ -88,8 +88,10 @@ lista* tabMaker_Salvar(tabCode* tab,lista* lst_code, arvore* noh);
 lista* tabMaker_addList(int bit, lista* lst_bit);
 lista* tabMaker_rmList(lista* lst_bit);
 int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead, char* string);
-void tabMaker_tabTofileEncoder_ARV_REC(arvore* noh, FILE* fp);
-void tabMaker_tabTofileEncoder_TAB_REC(tabCode* tab, FILE* encodeFile, FILE* file);
+void tabMaker_tabTofileEncoder_ARV_REC_DAT(arvore* noh, FILE* fp);
+void tabMaker_tabTofileEncoder_ARV_REC_TXT(arvore* noh, FILE* fp);
+void tabMaker_tabTofileEncoder_TAB_REC_DAT(tabCode* tab, FILE* encodeFile, FILE* file);
+void tabMaker_tabTofileEncoder_TAB_REC_TXT(tabCode* tab, FILE* encodeFile, FILE* file);
 void tabMaker_imprime(tabCode* tab, arvoreHead* arvHead);
 int tabMaker_finalizar(tabCode* tab, arvoreHead* arvHead);
 
