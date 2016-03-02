@@ -5,16 +5,18 @@
 #include "compactador_func.c"
 int main(void){
 	arvoreHead *arvHead;
-	listHead *lstHead;/* code */
 
 	int status=10;
 	status=inicializaARV(&arvHead);
-	status=inicializaLista(&lstHead);
 
 	status=input_ARV(arvHead);
 	status=input_decoderFileToFile(arvHead);
 
 	imprime(arvHead->root);
+	puts(">>");
+	arvHead->root=removeSubARV(arvHead->root, arvHead);
+	puts(">>>");
+	free(arvHead);
 	printf("status: %d\n", status);
 	puts("FIM DO PROGRAMA!"); /* prints ... */
 	return 0;
@@ -55,6 +57,8 @@ int input_decoderFileToFile(arvoreHead* arvHead){
 			}
 		}
 	}
+	fclose(coded_file);
+	fclose(decoded_file);
 	return status;
 }
 

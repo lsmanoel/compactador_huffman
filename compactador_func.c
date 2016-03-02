@@ -54,7 +54,7 @@ int tabMaker_finalizar(tabCode* tab, arvoreHead* arvHead){
 	return status;
 }
 
-
+/*output_listTofileEncoder() opera as funções tabMaker*/
 int output_listTofileEncoder(arvoreHead *arvHead, char* string){
 	puts("-------------------------------------------------------");
 	puts("output_listTofileEncoder()...");
@@ -70,9 +70,11 @@ int output_listTofileEncoder(arvoreHead *arvHead, char* string){
 	tabMaker_tabTofileEncoder(tab, arvHead, string);
 	
 	tabMaker_finalizar(tab, arvHead);
-	removeSubARV(arvHead->root, arvHead);
+	arvHead->root=removeSubARV(arvHead->root, arvHead);
 	return status;
 }
+
+/*tabMaker_ARVTotabEncoder() chama tabMaker_ARVTotabEncoder_REC()*/
 int tabMaker_ARVTotabEncoder(arvoreHead* arvHead, tabCode* tab){
 	puts("-------------------------------------------------------");
 	puts("tabMaker_ARVTotabEncoder()...");
@@ -82,16 +84,13 @@ int tabMaker_ARVTotabEncoder(arvoreHead* arvHead, tabCode* tab){
 	return status;
 }
 
+/*tabMaker_ARVTotabEncoder_REC() preenche tabela de códigos recursivamente*/
 void tabMaker_ARVTotabEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab, lista* temp_code){
 	puts("-------------------------------------------------------");
-	printf("  !ehvazia()... return %d\n", !ehvazia(noh));
+	printf("	!ehvazia(noh)... return %d\n", !ehvazia(noh));
 	if(!ehvazia(noh)){
-		puts(">>>>");
 		if(noh->l==NULL && noh->r==NULL){
-			printf("%d\n", *(tab->i));
-			puts("a");
 			(tab+*(tab->i))->code=tabMaker_Salvar(tab+*(tab->i), temp_code, noh);
-			puts("b");
 			tabMaker_imprime(tab, arvHead);
 			printf("*(tab->i): %d\n", *(tab->i));
 		}
@@ -110,6 +109,7 @@ void tabMaker_ARVTotabEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab
 	}
 }
 
+/*tabMaker_tabTofileEncoder() prepara os arquivos para codificação*/
 int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead, char *string){
 	puts("-------------------------------------------------------");
 	puts("tabMaker_tabTofileEncoder()...");
@@ -142,13 +142,11 @@ int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead, char *string){
 	return status;
 }
 
-
-
+/*tabMaker_tabTofileEncoder_TAB_REC_DAT() grava o arquivo.dat recursivamente*/
 void tabMaker_tabTofileEncoder_TAB_REC_DAT(tabCode* tab, FILE* encodeFile, FILE* file){
-	if(tab && encodeFile && file){
-	}
 }
 
+/*tabMaker_tabTofileEncoder_TAB_REC_DAT_TXT() grava o arquivo_codificado.txt*/
 void tabMaker_tabTofileEncoder_TAB_TXT(tabCode* tab, arvoreHead* arvHead, FILE* encodeFile, FILE* file){
 	int i;
 	char chr;
@@ -180,6 +178,7 @@ void tabMaker_tabTofileEncoder_TAB_TXT(tabCode* tab, arvoreHead* arvHead, FILE* 
 	}
 }
 
+/*tabMaker_tabTofileEncoder_ARV_REC_TXT() grava grava a arvore no arquivo_codificado.txt*/
 void tabMaker_tabTofileEncoder_ARV_REC_TXT(arvore* noh, FILE* fp){
 	printf("<");
 	fprintf(fp, "<");
@@ -199,6 +198,7 @@ void tabMaker_tabTofileEncoder_ARV_REC_TXT(arvore* noh, FILE* fp){
 	}
 }
 
+/*tabMaker_tabTofileEncoder_ARV_DAT() pré gravação da arvore no arquivo_codificado.dat*/
 int tabMaker_tabTofileEncoder_ARV_DAT(arvoreHead* arvHead, FILE* encodeFile_dat){
 	puts("-------------------------------------------------------");
 	puts("tabMaker_tabTofileEncoder_ARV_DAT()...");
@@ -208,6 +208,8 @@ int tabMaker_tabTofileEncoder_ARV_DAT(arvoreHead* arvHead, FILE* encodeFile_dat)
 	return status;
 }
 
+
+/*tabMaker_tabTofileEncoder_ARV_REC_DAT() grava a arvore no arquivo_codificado.dat recursivamente*/
 void tabMaker_tabTofileEncoder_ARV_REC_DAT(arvore* noh, FILE* encodeFile_dat){
 	printf("%p\n", noh);
 	if(!ehvazia(noh)){
@@ -218,6 +220,7 @@ void tabMaker_tabTofileEncoder_ARV_REC_DAT(arvore* noh, FILE* encodeFile_dat){
 	}
 }
 
+/*tabMaker_Salvar() o codigo do caracter na tabela de códigos*/
 lista* tabMaker_Salvar(tabCode* tab, lista* lst_code, arvore* noh){
 	printf("	tabMaker_Salvar()... \n");
 	int n=0;
@@ -265,6 +268,7 @@ lista* tabMaker_Salvar(tabCode* tab, lista* lst_code, arvore* noh){
 	return code;
 }
 
+/*A sequência binária e representada por uma lista... adiciona um bit*/
 lista* tabMaker_addList(int bit, lista* lst_bit){
 	printf("	tabMaker_addList...\n");
 	lista* novo_bit=(lista*)malloc(sizeof(lista));
@@ -280,6 +284,7 @@ lista* tabMaker_addList(int bit, lista* lst_bit){
 	return novo_bit;
 }
 
+/*A sequência binária e representada por uma lista... remove um bit*/
 lista* tabMaker_rmList(lista* lst_bit){
 	printf("	tabMaker_rmList... ");
 	lista* first;
@@ -294,6 +299,7 @@ lista* tabMaker_rmList(lista* lst_bit){
 	return first;
 }
 
+/*tabMaker_imprime() imprime a tabela de códigos*/
 void tabMaker_imprime(tabCode* tab, arvoreHead* arvHead){
 	puts("-------------------------------------------------------");
 	puts("tabMaker_imprime()...");
@@ -340,18 +346,6 @@ int inicializaARV(arvoreHead **arvHead){
 	return 0;
 }
 
-arvore* removeSubARV(arvore *noh, arvoreHead *arvHead){
-	if(!ehvazia(noh)){
-		removeSubARV(noh->l, arvHead);
-		removeSubARV(noh->r, arvHead);
-		//printf("removeRamoARV(); noh adress: %p\n", noh);
-		arvHead->size--;
-		free(noh->void_adress);
-		free(noh);
-		//printf("removeRamoARV(); noh adress: %p\n", noh);
-	}
-	return NULL;
-}
 
 int inicializaLista(listHead **lstHead) {
     listHead *novo_head = (listHead*) malloc(sizeof (listHead));
@@ -367,6 +361,22 @@ int inicializaLista(listHead **lstHead) {
 	return 0;
 };
 
+arvore* removeSubARV(arvore *noh, arvoreHead *arvHead){
+	if(!ehvazia(noh)){
+		removeSubARV(noh->l, arvHead);
+		removeSubARV(noh->r, arvHead);
+		//printf("removeRamoARV(); noh adress: %p\n", noh);
+		arvHead->size--;
+		if(noh->void_adress)
+			free(noh->void_adress);
+		if(noh)
+			free(noh);
+		//printf("removeRamoARV(); noh adress: %p\n", noh);
+	}
+	return NULL;
+}
+
+/*reordenadorLista_deNoh_ASCII() transforma a lista de nohs de árvore em uma unica árvore*/
 int reordenadorLista_deNoh_ASCII(listHead* lstHead, arvoreHead* arvHead){
 	puts("-------------------------------------------------------");
 	puts("reordenadorLista_deNoh_ASCII()...");
@@ -433,7 +443,7 @@ int reordenadorLista_deNoh_ASCII(listHead* lstHead, arvoreHead* arvHead){
 	}
 	return status;
 }
-
+/*insertionS_lista() ordena a lista com algorítimo de inserção*/
 int insertionS_lista(listHead *lstHead){
 	clock_t clock_1, clock_2;
 	clock_1=clock();
@@ -498,6 +508,8 @@ int insertionS_lista(listHead *lstHead){
 	return 0;
 }
 
+//*********************************************************88
+/*gerarLista_deNoh_ASCII() & input_fileTolist() geram a lista de nohs de árvore*/
 int gerarLista_deNoh_ASCII(listHead *lstHead, char** string){
 	puts("-------------------------------------------------------");
 	puts("gerarLista_deNoh_ASCII()...");
@@ -552,6 +564,7 @@ int input_fileTolist(listHead *lstHead, char** string){
 	fclose(fp);
 	return status;
 }
+//**********************************************************
 
 int addLastList(listHead *lstHead, char chr){
 	puts("-------------------------------------------------------");
@@ -604,8 +617,6 @@ int buscaLinear_lista(listHead *lstHead, char chr, lista **noh){
 	return 0;
 }
 
-
-
 /*imprime(); checa se a sub árvore não é vazia para uma função de impressão.
 */
 void imprime(arvore* noh){
@@ -628,6 +639,7 @@ void imprime_adress(arvore* noh){
 	}
 }
 
+/*imprime_dado(); imprime recursivamente os dados dos nós de uma sub árvore*/
 void imprime_dado(arvore* noh){
 	if(!ehvazia(noh)){
 		printf("	imprime_dado(); peso: %d ... caracter: %c\n", ((nohChar*)noh->void_adress)->peso, ((nohChar*)noh->void_adress)->caracter);
