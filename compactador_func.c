@@ -62,7 +62,7 @@ int output_listTofileEncoder(arvoreHead *arvHead, char* string){
 	//FILE* fp;
 	tabCode* tab;
 	tabMaker_inicializa(&tab, arvHead);
-	tabMaker_imprime(tab, arvHead);
+	//tabMaker_imprime(tab, arvHead);
 
 	tabMaker_ARVTotabEncoder(arvHead, tab);
 	tabMaker_imprime(tab, arvHead);
@@ -86,13 +86,12 @@ int tabMaker_ARVTotabEncoder(arvoreHead* arvHead, tabCode* tab){
 
 /*tabMaker_ARVTotabEncoder_REC() preenche tabela de códigos recursivamente*/
 void tabMaker_ARVTotabEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab, lista* temp_code){
-	puts("-------------------------------------------------------");
-	printf("	!ehvazia(noh)... return %d\n", !ehvazia(noh));
+	//printf("	!ehvazia(noh)... return %d\n", !ehvazia(noh));
 	if(!ehvazia(noh)){
 		if(noh->l==NULL && noh->r==NULL){
 			(tab+*(tab->i))->code=tabMaker_Salvar(tab+*(tab->i), temp_code, noh);
-			tabMaker_imprime(tab, arvHead);
-			printf("*(tab->i): %d\n", *(tab->i));
+			//tabMaker_imprime(tab, arvHead);
+			//printf("*(tab->i): %d\n", *(tab->i));
 		}
 		else{
 			temp_code=tabMaker_addList(0, temp_code);
@@ -211,7 +210,7 @@ int tabMaker_tabTofileEncoder_ARV_DAT(arvoreHead* arvHead, FILE* encodeFile_dat)
 
 /*tabMaker_tabTofileEncoder_ARV_REC_DAT() grava a arvore no arquivo_codificado.dat recursivamente*/
 void tabMaker_tabTofileEncoder_ARV_REC_DAT(arvore* noh, FILE* encodeFile_dat){
-	printf("%p\n", noh);
+	//printf("%p\n", noh);
 	if(!ehvazia(noh)){
 		fwrite(noh, sizeof(arvore), 1, encodeFile_dat);
 		fwrite(noh->void_adress, sizeof(nohChar), 1, encodeFile_dat);
@@ -222,7 +221,7 @@ void tabMaker_tabTofileEncoder_ARV_REC_DAT(arvore* noh, FILE* encodeFile_dat){
 
 /*tabMaker_Salvar() o codigo do caracter na tabela de códigos*/
 lista* tabMaker_Salvar(tabCode* tab, lista* lst_code, arvore* noh){
-	printf("	tabMaker_Salvar()... \n");
+	//printf("	tabMaker_Salvar()... \n");
 	int n=0;
 	lista* code=NULL, *temp_count=NULL;
 	//lista* next_code = (tab+1)->code;
@@ -232,45 +231,45 @@ lista* tabMaker_Salvar(tabCode* tab, lista* lst_code, arvore* noh){
 			n++;
 			temp_count=temp_count->first;
 		}
-		puts("...");
+		//puts("...");
 		temp_count=lst_code;
 		while(temp_count){
 			if(temp_count->adress_type==NULL){
-				printf("add 0 -->");
+				//printf("add 0 -->");
 				code=tabMaker_addList(0, code);
 			}
 			else{
-				printf("add 1 -->");
+				//printf("add 1 -->");
 				code=tabMaker_addList(1, code);
 			}
 			temp_count=temp_count->first;
 		}
-		printf("code: ");
+		//printf("code: ");
 		temp_count=code;
 		while(temp_count){
 			if(temp_count->adress_type==NULL){
-				printf("0 ");
+				//printf("0 ");
 			}
 			else{
-				printf("1 ");
+				//printf("1 ");
 			}
 			temp_count=temp_count->first;
 		}
-		printf("%p %c\n", &(tab->caracter), ((nohChar*)noh->void_adress)->caracter);
+		//printf("%p %c\n", &(tab->caracter), ((nohChar*)noh->void_adress)->caracter);
 		tab->caracter=((nohChar*)noh->void_adress)->caracter;
 		tab->code_size=n;
-		printf("		tab->code_size= %d\n", tab->code_size);
-		printf("%d\n", *(tab->i));
+		//printf("		tab->code_size= %d\n", tab->code_size);
+		//printf("%d\n", *(tab->i));
 		*(tab->i)=1+*(tab->i);
-		printf("%c\n", tab->caracter);
+		//printf("%c\n", tab->caracter);
 	}
-	printf("	tab->code: %p Ok!\n", code);
+	//printf("	tab->code: %p Ok!\n", code);
 	return code;
 }
 
 /*A sequência binária e representada por uma lista... adiciona um bit*/
 lista* tabMaker_addList(int bit, lista* lst_bit){
-	printf("	tabMaker_addList...\n");
+	//printf("	tabMaker_addList... ");
 	lista* novo_bit=(lista*)malloc(sizeof(lista));
 	if(bit)
 		novo_bit->adress_type=novo_bit;
@@ -279,14 +278,14 @@ lista* tabMaker_addList(int bit, lista* lst_bit){
 	novo_bit->next=NULL;
 	novo_bit->first=lst_bit;
 	if(lst_bit)
-		//lst_bit->next=novo_bit;
-	printf("\nnovo_bit: %p Ok!\n", novo_bit);
+		lst_bit->next=novo_bit;
+	//printf("novo_bit: %p Ok!\n", novo_bit);
 	return novo_bit;
 }
 
 /*A sequência binária e representada por uma lista... remove um bit*/
 lista* tabMaker_rmList(lista* lst_bit){
-	printf("	tabMaker_rmList... ");
+	//printf("	tabMaker_rmList... ");
 	lista* first;
 	if(lst_bit->first){
 		first=lst_bit->first;
@@ -295,7 +294,7 @@ lista* tabMaker_rmList(lista* lst_bit){
 	else
 		first=NULL;
 	free(lst_bit);
-	printf("Ok!\n");
+	//printf("Ok!\n");
 	return first;
 }
 
@@ -378,8 +377,8 @@ arvore* removeSubARV(arvore *noh, arvoreHead *arvHead){
 
 /*reordenadorLista_deNoh_ASCII() transforma a lista de nohs de árvore em uma unica árvore*/
 int reordenadorLista_deNoh_ASCII(listHead* lstHead, arvoreHead* arvHead){
-	puts("-------------------------------------------------------");
-	puts("reordenadorLista_deNoh_ASCII()...");
+	//puts("-------------------------------------------------------");
+	//puts("reordenadorLista_deNoh_ASCII()...");
 	int status=0;
 	lista* morto1=lstHead->first;
 	lista* morto2=(lstHead->first)->next;
@@ -397,7 +396,7 @@ int reordenadorLista_deNoh_ASCII(listHead* lstHead, arvoreHead* arvHead){
 	novo_nohChar->peso=((nohChar*)((arvore*)novo_arv->l)->void_adress)->peso+((nohChar*)((arvore*)novo_arv->r)->void_adress)->peso;
 	novo_nohChar->caracter='>';
 //******************************************************
-	puts("addLastList()...");
+	//puts("addLastList()...");
 
     novo_arv->void_adress=novo_nohChar;
     novo->adress_type=novo_arv;
@@ -416,43 +415,43 @@ int reordenadorLista_deNoh_ASCII(listHead* lstHead, arvoreHead* arvHead){
 	}
 	lstHead->last=novo;
 	lstHead->size--;
-	puts("List: elemento add.");
+	//puts("List: elemento add.");
 //******************************************************
-	printf("lstHead->size: %d\n", lstHead->size);
+	//printf("lstHead->size: %d\n", lstHead->size);
 	if(lstHead->size>1){
 		lstHead->first=temp;
 		((lista*)lstHead->first)->first=NULL;
 		free(morto1);
 		free(morto2);
-		mostrar_lista(lstHead->first);
+		//mostrar_lista(lstHead->first);
 		status=insertionS_lista(lstHead);
-		mostrar_lista(lstHead->first);
-		imprime(arvHead->root);
+		//mostrar_lista(lstHead->first);
+		//imprime(arvHead->root);
 		status=reordenadorLista_deNoh_ASCII(lstHead, arvHead);
 	}
 	else{
-		mostrar_lista(lstHead->first);
-		printf("%p\n", lstHead->last);
+		//mostrar_lista(lstHead->first);
+		//printf("%p\n", lstHead->last);
 		lstHead->first=lstHead->last;
 		lstHead->last=NULL;
 		free(morto1);		
 		free(morto2);
-		printf("%p\n", lstHead->first);
-		mostrar_lista(lstHead->first);
+		//printf("%p\n", lstHead->first);
+		//mostrar_lista(lstHead->first);
 		free(lstHead->first);
 	}
 	return status;
 }
 /*insertionS_lista() ordena a lista com algorítimo de inserção*/
 int insertionS_lista(listHead *lstHead){
-	clock_t clock_1, clock_2;
-	clock_1=clock();
+	//clock_t clock_1, clock_2;
+	//clock_1=clock();
     lista *change, *lst_temp_i, *lst_temp_j;
 	int  i, j, *k;
-	puts("-------------------------------------------------------");
-	puts("insertionS_lista()...");
-	printf("lstHead->first: %p\n", lstHead->first);
-	printf("(lstHead->first)->next: %p\n", (lstHead->first)->next);
+	//puts("-------------------------------------------------------");
+	//puts("insertionS_lista()...");
+	//printf("lstHead->first: %p\n", lstHead->first);
+	//printf("(lstHead->first)->next: %p\n", (lstHead->first)->next);
 
 	lst_temp_j=(lstHead->first)->next;
 	lst_temp_i=lstHead->first;
@@ -503,8 +502,8 @@ int insertionS_lista(listHead *lstHead){
 	while(lst_temp_i->next)
 		lst_temp_i=lst_temp_i->next;
 	lstHead->last=lst_temp_i;
-	clock_2=clock();
-	printf("tempo de ordenacao da lista: %d\n", (int)(clock_2 - clock_1));
+	//clock_2=clock();
+	//("tempo de ordenacao da lista: %d\n", (int)(clock_2 - clock_1));
 	return 0;
 }
 
@@ -523,11 +522,11 @@ int input_fileTolist(listHead *lstHead, char** string){
 	puts("input_fileTolist()...");
 	int status=0;
 	char chr;
-	char temp_string[31]="testefile.txt";
+	char temp_string[31];
 	lista* noh;
-	printf("Digite o nome do arquivo para compactacao: ");
-	//__fpurge(stdin);
-	//scanf("%s", temp_string);
+	printf("Digite o nome do arquivo com extencao .txt para compactacao: ");
+	__fpurge(stdin);
+	scanf("%s", temp_string);
 	*string=(char*)malloc(strlen(temp_string)*sizeof(char));
 	*string=strcpy(*string, temp_string);
 	if(strcmp(*string, temp_string)){
@@ -551,11 +550,11 @@ int input_fileTolist(listHead *lstHead, char** string){
 			else {
 				if(buscaLinear_lista(lstHead, chr, &noh)){
 					((nohChar*)((arvore*)noh->adress_type)->void_adress)->peso++;	
-					printf("Pesso++ em %c\n", chr);				
+					//printf("Pesso++ em %c\n", chr);				
 				}
 				else{
 					status=addLastList(lstHead, chr);
-					printf("Elemento add: %c\n", chr);					
+					//printf("Elemento add: %c\n", chr);					
 				}
 			}
 		}
@@ -567,8 +566,8 @@ int input_fileTolist(listHead *lstHead, char** string){
 //**********************************************************
 
 int addLastList(listHead *lstHead, char chr){
-	puts("-------------------------------------------------------");
-	puts("addLastList()...");
+	//puts("-------------------------------------------------------");
+	//puts("addLastList()...");
     lista* novo = (lista*) malloc(sizeof(lista));
     arvore* novo_arv = (arvore*) malloc(sizeof(arvore));
     nohChar* novo_nohChar = (nohChar*) malloc(sizeof(nohChar));
@@ -594,26 +593,26 @@ int addLastList(listHead *lstHead, char chr){
 	}
 	lstHead->last=novo;
 	lstHead->size++;
-	puts("List: elemento add.");
+	//puts("List: elemento add.");
 	return 0;
 
 }
 
 int buscaLinear_lista(listHead *lstHead, char chr, lista **noh){
-	puts("-------------------------------------------------------");
-	puts("buscaLinear_lista()...");
+	//puts("-------------------------------------------------------");
+	//puts("buscaLinear_lista()...");
 	lista* temp;
 	temp=lstHead->first;
 	while(temp){
 		if(((nohChar*)((arvore*)temp->adress_type)->void_adress)->caracter == chr){
-			puts("...");
+			//puts("...");
 			*noh=temp;
-			puts(">>>caracter encontrado");
+			//puts(">>>caracter encontrado");
 			return 1;
 		}
 		temp=temp->next;
 	}
-	puts("caracter nao encontrado");
+	//puts("caracter nao encontrado");
 	return 0;
 }
 

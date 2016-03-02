@@ -12,10 +12,8 @@ int main(void){
 	status=input_ARV(arvHead);
 	status=input_decoderFileToFile(arvHead);
 
-	imprime(arvHead->root);
-	puts(">>");
+	//imprime(arvHead->root);
 	arvHead->root=removeSubARV(arvHead->root, arvHead);
-	puts(">>>");
 	free(arvHead);
 	puts("Arquivo descompactado com sucesso!");
 	puts("Checar arquivos no diretorio do programa!");
@@ -40,17 +38,17 @@ int input_decoderFileToFile(arvoreHead* arvHead){
 					if(chr==EOF)
 						break;
 					if(chr=='0'){
-						printf("0");
+						//printf("0");
 						noh=noh->l;
 					}
 					else{
-						printf("1");
+						//printf("1");
 						noh=noh->r;
 					}
 				}
 				if(chr==EOF)
 					break;	
-				printf(":%c ", ((nohChar*)noh->void_adress)->caracter);
+				//printf(":%c \n", ((nohChar*)noh->void_adress)->caracter);
 				fprintf(decoded_file, "%c", ((nohChar*)noh->void_adress)->caracter);
 				noh=arvHead->root;
 			}
@@ -95,9 +93,9 @@ void input_ARV_REC_DAT(arvore** noh, FILE* fp){
 	fread(*noh, sizeof(arvore), 1, fp);
 	fread(novo_char, sizeof(nohChar), 1, fp);
 	(*noh)->void_adress=novo_char;
-	printf("input_ARV_REC_DAT() ... noh: %p\n", *noh);
+	//printf("input_ARV_REC_DAT() ... noh: %p\n", *noh);
 	if(*noh){
-		printf("	 (noh)->void_adress: %p\n", (*noh)->void_adress);
+		//printf("	 (noh)->void_adress: %p\n", (*noh)->void_adress);
 		if((*noh)->l)
 			input_ARV_REC_DAT(&((*noh)->l), fp);
 		if((*noh)->l)

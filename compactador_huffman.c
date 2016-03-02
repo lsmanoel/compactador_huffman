@@ -16,21 +16,21 @@ int main(void) {
 
 	status=gerarLista_deNoh_ASCII(lstHead, &string);
 
-	mostrar_lista((lista*)lstHead->first);
+	//mostrar_lista((lista*)lstHead->first);
 
 	status=insertionS_lista(lstHead);
 
-	mostrar_lista((lista*)lstHead->first);
+	//mostrar_lista((lista*)lstHead->first);
 
 	status=reordenadorLista_deNoh_ASCII(lstHead, arvHead);
 	status=main_altura_ARV(arvHead);
 	status=main_largura_ARV(arvHead);
 
-	imprime(arvHead->root);
+	//imprime(arvHead->root);
 	status=output_listTofileEncoder(arvHead, string);
 	free(arvHead);
 	free(string);
-	//free(lstHead);
+	free(lstHead);
 	puts("Arquivo compactado com sucesso!");
 	puts("Checar arquivos no diretorio do programa!");
 	printf("status: %d\n", status);
