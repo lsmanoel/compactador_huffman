@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "compactador_huffman.h"
 #include <time.h>
 
@@ -67,9 +68,9 @@ int tabMaker_finalizar(tabCode* tab, arvoreHead* arvHead){
 		code=(tab+i)->code;
 		if(code){
 			while(code){
-			morto=code;
-			code=code->first;
-			free(morto);
+				morto=code;
+				code=code->first;
+				free(morto);
 			}
 		}
 		else
@@ -141,8 +142,8 @@ int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead, char *string){
 	puts("-------------------------------------------------------");
 	puts("tabMaker_tabTofileEncoder...");
 	int status=0;
-	FILE* /*encodeFile_txt,*/ encodeFile_dat, *file;
-	//encodeFile_txt = fopen("arquivo_codificado.txt", "w");
+	FILE* encodeFile_txt, *encodeFile_dat, *file;
+	encodeFile_txt = fopen("arquivo_codificado.txt", "w");
 	encodeFile_dat = fopen("arquivo_codificado.dat", "w");
 	if(encodeFile_dat==NULL)
 		puts("erro ao abrir arquivo_codificado.txt");
@@ -150,20 +151,53 @@ int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead, char *string){
 		puts("arquivo_codificado.txt Aberto!");
 	file = fopen(string, "r");
 	if (file==NULL)
-		printf("erro ao abrie %s\n", string);
+		printf("erro ao abrir %s\n", string);
 	else
 		printf("%s Aberto!\n", string);
 	tabMaker_tabTofileEncoder_ARV_REC_DAT(arvHead->root, encodeFile_dat);
 	printf("\n");
-	tabMaker_tabTofileEncoder_TAB_REC_DAT(tab, encodeFile_dat, file);
+	tabMaker_tabTofileEncoder_TAB_TXT(tab, arvHead,encodeFile_txt, file);
 
 	fclose(encodeFile_dat);
-	//fclose(encodeFile_txt);
+	fclose(encodeFile_txt);
+	free(string);
 	return status;
 }
 
 void tabMaker_tabTofileEncoder_TAB_REC_DAT(tabCode* tab, FILE* encodeFile, FILE* file){
+	if(tab && encodeFile && file){
+	}
+}
 
+void tabMaker_tabTofileEncoder_TAB_TXT(tabCode* tab, arvoreHead* arvHead, FILE* encodeFile, FILE* file){
+	int i;
+	char chr;
+	lista* list_temp;
+	if(tab && encodeFile && file){
+		puts("tabMaker_tabTofileEncoder_TAB_TXT(); Arquivo aberto.");
+		while(1){
+			chr=fgetc(file);
+			if(chr==EOF)
+				break;
+			else {
+				for(i=0; i<arvHead->largura; i++){
+					if((tab+i)->caracter==chr){
+						list_temp=(tab+i)->code;
+						while(list_temp){
+							if(list_temp->adress_type==NULL)
+								fprintf(encodeFile, "0\n");
+							else
+								fprintf(encodeFile, "1\n");
+							list_temp=list_temp->first;
+						}
+					}
+				}
+			}
+		}
+	}
+	else {
+		puts("Erro ao abrir arquivo!");
+	}
 }
 
 void tabMaker_tabTofileEncoder_ARV_REC_TXT(arvore* noh, FILE* fp){
@@ -491,7 +525,12 @@ int input_fileTolist(listHead *lstHead, char** string){
 	printf("Digite o nome do arquivo para compactacao: ");
 	//__fpurge(stdin);
 	//scanf("%s", temp_string);
-	*string=temp_string;
+	*string=(char*)malloc(strlen(temp_string)*sizeof(char));
+	*string=strcpy(*string, temp_string);
+	if(strcmp(*string, temp_string)){
+		puts("ERRO STRING!");
+		exit(1);
+	}
 	FILE* fp;
 	puts("...");
 	fp = fopen(*string, "r");
