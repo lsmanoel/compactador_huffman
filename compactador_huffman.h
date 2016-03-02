@@ -82,7 +82,9 @@ int input_ARV(arvoreHead* arvHead);
 void input_ARV_REC_DAT(arvore** noh, FILE* fp);
 int input_fileTolist(listHead *lstHead, char** string);
 int output_listTofileEncoder(arvoreHead *arvHead, char* string);
-int input_coderFileToFIle(arvoreHead* arvHead);
+int input_decoderFileToFile(arvoreHead* arvHead);
+
+//protótipos tabMaker;
 int tabMaker_inicializa(tabCode** tab, arvoreHead *arvHead);
 int tabMaker_ARVTotabEncoder(arvoreHead* arvHead, tabCode* tab);
 void tabMaker_ARVTotabEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab, lista* temp_code);
@@ -95,6 +97,8 @@ void tabMaker_tabTofileEncoder_ARV_REC_DAT(arvore* noh, FILE* fp);
 void tabMaker_tabTofileEncoder_ARV_REC_TXT(arvore* noh, FILE* fp);
 void tabMaker_tabTofileEncoder_TAB_REC_DAT(tabCode* tab, FILE* encodeFile, FILE* file);
 void tabMaker_tabTofileEncoder_TAB_TXT(tabCode* tab, arvoreHead *arvHead, FILE* encodeFile, FILE* file);
+int tabMaker_txtTodat(void);
+int tabMaker_datTotxt(void);
 void tabMaker_imprime(tabCode* tab, arvoreHead* arvHead);
 int tabMaker_finalizar(tabCode* tab, arvoreHead* arvHead);
 

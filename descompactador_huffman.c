@@ -12,12 +12,50 @@ int main(void){
 	status=inicializaLista(&lstHead);
 
 	status=input_ARV(arvHead);
-	//status=input_coderFileToFile(arvHead);
+	status=input_decoderFileToFile(arvHead);
 
 	imprime(arvHead->root);
 	printf("status: %d\n", status);
 	puts("FIM DO PROGRAMA!"); /* prints ... */
 	return 0;
+}
+
+int input_decoderFileToFile(arvoreHead* arvHead){
+	int status=0;
+	char chr;
+	arvore* noh=arvHead->root;
+	FILE* coded_file, *decoded_file;
+	coded_file=fopen("arquivo_codificado.txt", "r");
+	decoded_file=fopen("arquivo_decodificado.txt", "w");
+	if(decoded_file && coded_file && arvHead->root){
+		puts("input_decoderFileToFile(); Arquivo aberto.");
+		while(1){
+			if(chr!=EOF){
+				while(noh->l || noh->r){
+					chr=fgetc(coded_file);
+					if(chr==EOF)
+						break;
+					if(chr=='0'){
+						printf("0");
+						noh=noh->l;
+					}
+					else{
+						printf("1");
+						noh=noh->r;
+					}
+				}
+				if(chr==EOF)
+					break;	
+				printf(":%c ", ((nohChar*)noh->void_adress)->caracter);
+				fprintf(decoded_file, "%c", ((nohChar*)noh->void_adress)->caracter);
+				noh=arvHead->root;
+			}
+			else{
+				break;
+			}
+		}
+	}
+	return status;
 }
 
 int input_ARV(arvoreHead* arvHead){

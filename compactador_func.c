@@ -117,10 +117,15 @@ int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead, char *string){
 	FILE* encodeFile_txt, *encodeFile_dat, *file;
 	encodeFile_txt = fopen("arquivo_codificado.txt", "w");
 	encodeFile_dat = fopen("arquivo_codificado.dat", "wb");
-	if(encodeFile_dat==NULL)
+	if(encodeFile_txt==NULL)
 		puts("erro ao abrir arquivo_codificado.txt");
 	else
 		puts("arquivo_codificado.txt Aberto!");
+	if(encodeFile_dat==NULL)
+		puts("erro ao abrir arquivo_codificado.dat");
+	else
+		puts("arquivo_codificado.dat Aberto!");
+
 	file = fopen(string, "r");
 	if (file==NULL)
 		printf("erro ao abrir %s\n", string);
@@ -160,9 +165,9 @@ void tabMaker_tabTofileEncoder_TAB_TXT(tabCode* tab, arvoreHead* arvHead, FILE* 
 						list_temp=(tab+i)->code;
 						while(list_temp){
 							if(list_temp->adress_type==NULL)
-								fprintf(encodeFile, "0\n");
+								fprintf(encodeFile, "0");
 							else
-								fprintf(encodeFile, "1\n");
+								fprintf(encodeFile, "1");
 							list_temp=list_temp->first;
 						}
 					}
