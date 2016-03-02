@@ -78,9 +78,11 @@ arvore* criarNohRecursivo(void *elemento, arvore* l, arvore* r, arvoreHead *arvH
 int ehvazia(arvore* noh);
 
 //protótipos I/O;
+int input_ARV(arvoreHead* arvHead);
+void input_ARV_REC_DAT(arvore** noh, FILE* fp);
 int input_fileTolist(listHead *lstHead, char** string);
 int output_listTofileEncoder(arvoreHead *arvHead, char* string);
-
+int input_coderFileToFIle(arvoreHead* arvHead);
 int tabMaker_inicializa(tabCode** tab, arvoreHead *arvHead);
 int tabMaker_ARVTotabEncoder(arvoreHead* arvHead, tabCode* tab);
 void tabMaker_ARVTotabEncoder_REC(arvoreHead* arvHead, arvore* noh, tabCode* tab, lista* temp_code);
@@ -88,6 +90,7 @@ lista* tabMaker_Salvar(tabCode* tab,lista* lst_code, arvore* noh);
 lista* tabMaker_addList(int bit, lista* lst_bit);
 lista* tabMaker_rmList(lista* lst_bit);
 int tabMaker_tabTofileEncoder(tabCode* tab, arvoreHead* arvHead, char* string);
+int tabMaker_tabTofileEncoder_ARV_DAT(arvoreHead* arvHead, FILE* encodeFile_dat);
 void tabMaker_tabTofileEncoder_ARV_REC_DAT(arvore* noh, FILE* fp);
 void tabMaker_tabTofileEncoder_ARV_REC_TXT(arvore* noh, FILE* fp);
 void tabMaker_tabTofileEncoder_TAB_REC_DAT(tabCode* tab, FILE* encodeFile, FILE* file);
