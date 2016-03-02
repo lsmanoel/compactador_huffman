@@ -17,6 +17,8 @@ int main(void){
 	arvHead->root=removeSubARV(arvHead->root, arvHead);
 	puts(">>>");
 	free(arvHead);
+	puts("Arquivo descompactado com sucesso!");
+	puts("Checar arquivos no diretorio do programa!");
 	printf("status: %d\n", status);
 	puts("FIM DO PROGRAMA!"); /* prints ... */
 	return 0;

@@ -29,7 +29,10 @@ int main(void) {
 	imprime(arvHead->root);
 	status=output_listTofileEncoder(arvHead, string);
 	free(arvHead);
+	free(string);
 	//free(lstHead);
+	puts("Arquivo compactado com sucesso!");
+	puts("Checar arquivos no diretorio do programa!");
 	printf("status: %d\n", status);
 	puts("FIM DO PROGRAMA!"); /* prints ... */
 	return EXIT_SUCCESS;
